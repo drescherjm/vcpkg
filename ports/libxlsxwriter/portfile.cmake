@@ -16,22 +16,17 @@ vcpkg_from_github(
     REPO jmcnamara/libxlsxwriter
     REF RELEASE_0.7.7
     SHA512 ab20b3178701ea0146ac7e26956e064694e1abf81af64090b9a8c4f32ff97fb7c16eb86e24c955d16a155fb69f23193ff331306ab902dec1a244c91258d9524f
-    #HEAD_REF master
 	PATCHES libxlsxwriter-no--config-install-folders.patch
 )
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA # Disable this option if project cannot be built with Ninja
-    # OPTIONS -DUSE_THIS_IN_ALL_BUILDS=1 -DUSE_THIS_TOO=2
-    # OPTIONS_RELEASE -DOPTIMIZE=1
-    # OPTIONS_DEBUG -DDEBUGGABLE=1
 )
 
 vcpkg_install_cmake()
 
 # Handle copyright
-
 file(INSTALL ${SOURCE_PATH}/License.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter RENAME copyright)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
