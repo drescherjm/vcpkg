@@ -17,12 +17,7 @@ vcpkg_from_github(
     REF RELEASE_0.7.7
     SHA512 ab20b3178701ea0146ac7e26956e064694e1abf81af64090b9a8c4f32ff97fb7c16eb86e24c955d16a155fb69f23193ff331306ab902dec1a244c91258d9524f
     #HEAD_REF master
-)
-
-vcpkg_apply_patches(
-    SOURCE_PATH <${SOURCE_PATH}>
-    [QUIET]
-    PATCHES <libxlsxwriter-no--config-install-folders.patch>
+	PATCHES libxlsxwriter-no--config-install-folders.patch
 )
 
 vcpkg_configure_cmake(
