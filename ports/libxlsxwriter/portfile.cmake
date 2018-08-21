@@ -19,14 +19,11 @@ vcpkg_from_github(
     #HEAD_REF master
 )
 
-# set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/libxlsxwriter-RELEASE_0.7.7)
-# vcpkg_download_distfile(ARCHIVE
-    # URLS "https://github.com/jmcnamara/libxlsxwriter/archive/RELEASE_0.7.7.zip"
-    # FILENAME "libxlsxwriter-0.7.7.zip"
-    # SHA512 5655d61d67fd50ef522a6eff4f36cdf50177efa5f2d0c56b1df5721225e83c88331fa1d45e731599b3b8140d4088ee303a8b652482a9e089082267612250a831
-# )
-
-#vcpkg_extract_source_archive(${ARCHIVE})
+vcpkg_apply_patches(
+    SOURCE_PATH <${SOURCE_PATH}>
+    [QUIET]
+    PATCHES <libxlsxwriter-no--config-install-folders.patch>
+)
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
@@ -37,8 +34,6 @@ vcpkg_configure_cmake(
 )
 
 vcpkg_install_cmake()
-
-#vcpkg_fixup_cmake_targets()
 
 # Handle copyright
 
