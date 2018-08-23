@@ -1,0 +1,66 @@
+--- EASE_0.7.7-b78abd26c1/CMakeLists.txt	2018-05-16 19:42:39.000000000 -0400
++++ Updated/CMakeLists.txt	2018-08-23 11:52:03.598124300 -0400
+@@ -190,10 +190,12 @@
+ )
+ target_link_libraries(${PROJECT_NAME} LINK_PUBLIC ${ZLIB_LIBRARIES} ${MINIZIP_LIBRARIES})
+ target_compile_definitions(${PROJECT_NAME} PRIVATE ${LXW_PRIVATE_COMPILE_DEFINITIONS})
+-target_include_directories(${PROJECT_NAME}
+-    PRIVATE ${LXW_PRIVATE_INCLUDE_DIRS}
+-    PUBLIC include include/xlsxwriter
+-)
++# target_include_directories(${PROJECT_NAME}
++    # PRIVATE ${LXW_PRIVATE_INCLUDE_DIRS}
++    # PUBLIC include include/xlsxwriter
++# )
++
++include_directories(${LXW_PRIVATE_INCLUDE_DIRS} include include/xlsxwriter)
+ 
+ if(MSVC)
+     if (NOT BUILD_SHARED_LIBS)
+@@ -295,23 +297,24 @@
+ 
+ include(GNUInstallDirs)
+ 
+-if(MSVC)
+-    if(CMAKE_CL_64)
+-        set(MSVC_FOLDER_PREFIX x64)
+-    else()
+-        set(MSVC_FOLDER_PREFIX Win32)
+-    endif()
++install(FILES include/xlsxwriter.h DESTINATION include)
++install(DIRECTORY include/xlsxwriter
++    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
++    FILES_MATCHING PATTERN "*.h"
++)
+ 
++if(MSVC)
+     install(TARGETS ${PROJECT_NAME}
+-        LIBRARY DESTINATION "lib/${MSVC_FOLDER_PREFIX}/\${CMAKE_INSTALL_CONFIG_NAME}"
+-        ARCHIVE DESTINATION "lib/${MSVC_FOLDER_PREFIX}/\${CMAKE_INSTALL_CONFIG_NAME}"
+-        RUNTIME DESTINATION "bin/${MSVC_FOLDER_PREFIX}/\${CMAKE_INSTALL_CONFIG_NAME}"
++		EXPORT XLSX
++        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
++        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+     )
+     if (NOT BUILD_SHARED_LIBS)
+         install(FILES $<TARGET_FILE_DIR:${PROJECT_NAME}>/${PROJECT_NAME}.pdb
+-            DESTINATION "lib/${MSVC_FOLDER_PREFIX}/\${CMAKE_INSTALL_CONFIG_NAME}"
++            DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         )
+-    endif()
++	endif()
+ 
+ else(MSVC)
+     install(TARGETS ${PROJECT_NAME}
+@@ -320,8 +323,5 @@
+         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+     )
+ endif(MSVC)
+-install(FILES include/xlsxwriter.h DESTINATION include)
+-install(DIRECTORY include/xlsxwriter
+-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+-    FILES_MATCHING PATTERN "*.h"
+-)
++
++install(EXPORT XLSX FILE libxlsxwriterConfig.cmake DESTINATION share/libxlsxwriter)
