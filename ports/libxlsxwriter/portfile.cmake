@@ -27,7 +27,9 @@ vcpkg_configure_cmake(
 vcpkg_install_cmake()
 
 # Handle copyright
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter)
+file(COPY ${CURRENT_PACKAGES_DIR}/debug/share/libxlsxwriter/libxlsxwriterConfig-debug.cmake  DESTINATION ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter)
 file(INSTALL ${SOURCE_PATH}/License.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter RENAME copyright)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
-
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 vcpkg_copy_pdbs()
