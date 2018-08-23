@@ -1,23 +1,47 @@
 --- EASE_0.7.7-b78abd26c1/CMakeLists.txt	2018-05-16 19:42:39.000000000 -0400
-+++ Updated/CMakeLists.txt	2018-08-23 11:52:03.598124300 -0400
-@@ -190,10 +190,12 @@
++++ Updated/CMakeLists.txt	2018-08-23 16:08:34.623799200 -0400
+@@ -139,9 +139,10 @@
+ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+ 
+ # ZLIB
+-find_package(ZLIB REQUIRED "1.0")
++#find_package(ZLIB REQUIRED "1.0")
++find_package(ZLIB REQUIRED)
+ list(APPEND LXW_PRIVATE_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+-message("zlib version: " ${ZLIB_VERSION})
++message("zlib version: " ${ZLIB_VERSION} " " ${ZLIB_LIBRARIES} " " ${CMAKE_BUILD_TYPE})
+ 
+ # MINIZIP
+ if (USE_SYSTEM_MINIZIP)
+@@ -188,13 +189,23 @@
+     PRIVATE ${LXW_SOURCES}
+     PUBLIC ${LXW_HEADERS}
  )
- target_link_libraries(${PROJECT_NAME} LINK_PUBLIC ${ZLIB_LIBRARIES} ${MINIZIP_LIBRARIES})
+-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC ${ZLIB_LIBRARIES} ${MINIZIP_LIBRARIES})
++target_link_libraries(${PROJECT_NAME} ${MINIZIP_LIBRARIES} LINK_PRIVATE ZLIB::ZLIB)
  target_compile_definitions(${PROJECT_NAME} PRIVATE ${LXW_PRIVATE_COMPILE_DEFINITIONS})
 -target_include_directories(${PROJECT_NAME}
 -    PRIVATE ${LXW_PRIVATE_INCLUDE_DIRS}
 -    PUBLIC include include/xlsxwriter
--)
 +# target_include_directories(${PROJECT_NAME}
 +    # PRIVATE ${LXW_PRIVATE_INCLUDE_DIRS}
-+    # PUBLIC include include/xlsxwriter
++    # PUBLIC include include/libxlsxwriter
 +# )
 +
-+include_directories(${LXW_PRIVATE_INCLUDE_DIRS} include include/xlsxwriter)
++target_include_directories(${PROJECT_NAME} 
++   PRIVATE ${LXW_PRIVATE_INCLUDE_DIRS}
++   INTERFACE
++    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
++	$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}>
++    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+ )
  
++include_directories(${LXW_PRIVATE_INCLUDE_DIRS} include include/xlsxwriter)
++
  if(MSVC)
      if (NOT BUILD_SHARED_LIBS)
-@@ -295,23 +297,24 @@
+         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+@@ -295,33 +306,33 @@
  
  include(GNUInstallDirs)
  
@@ -42,6 +66,7 @@
 +        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 +        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 +        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++		INCLUDES DESTINATION include
      )
      if (NOT BUILD_SHARED_LIBS)
          install(FILES $<TARGET_FILE_DIR:${PROJECT_NAME}>/${PROJECT_NAME}.pdb
@@ -53,8 +78,10 @@
  
  else(MSVC)
      install(TARGETS ${PROJECT_NAME}
-@@ -320,8 +323,5 @@
+         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++		INCLUDES DESTINATION include
      )
  endif(MSVC)
 -install(FILES include/xlsxwriter.h DESTINATION include)

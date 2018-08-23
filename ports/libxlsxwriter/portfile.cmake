@@ -19,6 +19,8 @@ vcpkg_from_github(
 	PATCHES libxlsxwriter-no-config-install-folders.patch
 )
 
+file(REMOVE  ${SOURCE_PATH}/cmake/FindPackage.cmake ${SOURCE_PATH}/cmake/FindZLIB.cmake)
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA # Disable this option if project cannot be built with Ninja
@@ -27,11 +29,9 @@ vcpkg_configure_cmake(
 vcpkg_install_cmake()
 
 # Handle copyright
-#file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter)
-#file(COPY ${CURRENT_PACKAGES_DIR}/debug/share/libxlsxwriter/libxlsxwriterConfig-debug.cmake  DESTINATION ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter)
 file(INSTALL ${SOURCE_PATH}/License.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/libxlsxwriter RENAME copyright)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
-#file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
+
 vcpkg_copy_pdbs()
 
 vcpkg_fixup_cmake_targets()
