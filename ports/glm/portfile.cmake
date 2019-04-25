@@ -3,14 +3,14 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO g-truc/glm
-    REF 0.9.9.0
-    SHA512 b7a6996cb98bc334130c33a339275b50ea28d8dfce300f3d14ac52edf0b5c38bf216d318f411e898edef428876c0b2d1f6a6e951f160f31425fe0852ad150421
+    REF 0.9.9.4
+    SHA512 50e4784fcd5f1da4ae27830948ffe4b412ec53447b89d30c6dcc2b4e0f9ec05cca4b07461d3d8a339eb103fae8dac325fabc87607b5397122ce2021d6e15a1a1
     HEAD_REF master
 )
 
 vcpkg_apply_patches(
     SOURCE_PATH ${SOURCE_PATH}
-    PATCHES "${CMAKE_CURRENT_LIST_DIR}/ignore-warning-C4201.patch"
+    PATCHES "${CMAKE_CURRENT_LIST_DIR}/disable_warnings_as_error.patch"
 )
 
 vcpkg_configure_cmake(
